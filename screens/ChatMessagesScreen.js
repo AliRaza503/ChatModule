@@ -107,14 +107,17 @@ const ChatScreen = ({ route }) => {
     });
 
     socket.current.on('message received', (newMessageReceived) => {
-      const newMsg = {
-        id: newMessageReceived.message._id,
-        text: newMessageReceived.message.content,
-        sentByMe: newMessageReceived.message.sender._id === userId,
-        timestamp: newMessageReceived.message.updatedAt,
-      };
-      setMessages(prevMessages => [...prevMessages, newMsg]);
-      scrollToEnd();
+      if (newMessageReceived.message.sender._id === route.params.recepientId) {
+        const newMsg = {
+          id: newMessageReceived.message._id,
+          text: newMessageReceived.message.content,
+          sentByMe: newMessageReceived.message.sender._id === userId,
+          timestamp: newMessageReceived.message.updatedAt,
+        };
+        setMessages(prevMessages => [...prevMessages, newMsg]);
+        scrollToEnd();  
+      }
+      
     });
 
     return () => {
