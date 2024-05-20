@@ -24,17 +24,6 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
 });
 
-
-// const allMessagesInChat = asyncHandler(async (req, res) => {
-//     const chatId = req.params.chatId;
-//     try{
-//         const messages = await Message.find({ chat: chatId }).populate("chat").populate("sender");
-//         res.status(200).json({ messages: messages, success: true });
-//     } catch (error) {
-//         res.status(400).json({ message: error, success: false });
-//     }
-// });
-
 const getMessagesWith = asyncHandler(async (req, res) => {
     const recipientId = req.params.recipientId;
     try {

@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const chatRoutes = require('./routes/chatRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -28,7 +27,6 @@ socketHandler(io);
 
 // API Routes
 app.use('/api/user', userRoutes);
-app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
 // Error handling middlewares
