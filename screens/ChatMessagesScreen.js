@@ -59,7 +59,6 @@ const ChatScreen = ({ route }) => {
     if (newMessage.trim() === '') return;
     const recipientId = route.params?.recepientId;
     const token = await AsyncStorage.getItem('authToken');
-    const decodedToken = jwtDecode(token);
     const port = process.env.PORT || 3000;
     const url = `http://${IP_ADDRESS}:${port}/api/message`;
     fetch(url, {
@@ -96,6 +95,12 @@ const ChatScreen = ({ route }) => {
   const scrollToEnd = () => {
     flatListRef.current.scrollToEnd();
   }
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollToEnd();
+    }
+  }, [messages]);
 
   useEffect(() => {
     socket.current = io(ENDPOINT);

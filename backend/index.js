@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const mlRoutes = require('./routes/MLRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -28,6 +29,7 @@ socketHandler(io);
 // API Routes
 app.use('/api/user', userRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/score', mlRoutes);
 
 // Error handling middlewares
 app.use(notFound);

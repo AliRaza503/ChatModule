@@ -43,4 +43,58 @@ const getMessagesWith = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { sendMessage, getMessagesWith };
+const getAllRecipients = asyncHandler(async (req, res) => {
+    try {
+        // Get all the messages where the current user is the sender or recipient
+        const messages = await Message.find({ 
+            $or: [
+                { sender: req.user._id },
+                { recipient: req.user._id },
+            ]
+        }).populate("recipient").populate("sender");
+
+        const recipients = new Map();
+        const senders = new Map();
+
+        // Extract all the recipients where I am the sender
+        for (let i = 0; i < messages.length; i++) {
+            if (messages[i].sender._id.toString() === req.user._id.toString()) {
+                const recipient = messages[i].recipient;
+                if (!recipients.has(recipient._id.toString())) {
+                    recipients.set(recipient._id.toString(), {
+                        id: recipient._id,
+                        name: recipient.name,
+                        email: recipient.email,
+                        image: recipient.image
+                    });
+                }
+            }
+        }
+
+        // Extract all the senders where I am the recipient
+        for (let i = 0; i < messages.length; i++) {
+            if (messages[i].recipient._id.toString() === req.user._id.toString()) {
+                const sender = messages[i].sender;
+                if (!senders.has(sender._id.toString())) {
+                    senders.set(sender._id.toString(), {
+                        id: sender._id,
+                        name: sender.name,
+                        email: sender.email,
+                        image: sender.image
+                    });
+                }
+            }
+        }
+
+        // Combine the recipients and senders into one array and remove duplicates
+        const usersMap = new Map([...recipients, ...senders]);
+        const users = Array.from(usersMap.values());
+
+        res.status(200).json({ users: users, success: true });
+    } catch (error) {
+        res.status(400).json({ message: error.message, success: false });
+    }
+});
+
+
+module.exports = { sendMessage, getMessagesWith, getAllRecipients };
